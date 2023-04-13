@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-var API string = "https://api.open-meteo.com/v1"
+var API string = "https://api.open-meteo.com/v1/"
 
 /*
 Método privado dedicado a fazer chamada a API vai http e obter os dados em formato binário, para posterior tratamento
@@ -33,8 +33,7 @@ func request(method string, endpoint string) (*http.Response, error) {
 Função responsável por fazer requisição a API
 */
 func GetDataRequest(endpoint string) ([]byte, int, error) {
-	requestMethod := "GET"
-	res, err := request(requestMethod, endpoint)
+	res, err := request(http.MethodGet, endpoint)
 	dataApi, _ := io.ReadAll(res.Body)
 	return dataApi, res.StatusCode, err
 }
