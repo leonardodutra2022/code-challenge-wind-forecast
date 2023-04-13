@@ -1,6 +1,7 @@
 package openmeteo_api
 
 import (
+	"errors"
 	"io"
 	"net/http"
 	"strings"
@@ -8,27 +9,32 @@ import (
 
 var API string = "https://api.open-meteo.com/v1"
 
-func request(method string, endpoint string) (*http.Response, string, error) {
-	var errorMessage string
+/*
+Método privado dedicado a fazer chamada a API vai http e obter os dados em formato binário, para posterior tratamento
+*/
+func request(method string, endpoint string) (*http.Response, error) {
 	clientHttp := http.Client{}
 	req, err := http.NewRequest(method, strings.Join([]string{API, endpoint}, "/"), nil)
 	req.Header.Add("Content-Type", "application/json")
 	if err != nil {
-		errorMessage = "Erro ao criar requisição"
-		return nil, errorMessage, err
+		err = errors.New("erro ao criar requisição")
+		return nil, err
 	}
 	res, err := clientHttp.Do(req)
 	if err != nil {
-		errorMessage = "Erro ao conectar-se com a API Open-Meteo"
-		return nil, errorMessage, err
+		err = errors.New("erro ao conectar-se com a API Open-Meteo")
+		return nil, err
 	}
 
-	return res, "", nil
+	return res, nil
 }
 
-func GetDataRequest(endpoint string) ([]byte, int, string, error) {
+/*
+Função responsável por fazer requisição a API
+*/
+func GetDataRequest(endpoint string) ([]byte, int, error) {
 	requestMethod := "GET"
-	res, errorMessage, err := request(requestMethod, endpoint)
+	res, err := request(requestMethod, endpoint)
 	dataApi, _ := io.ReadAll(res.Body)
-	return dataApi, res.StatusCode, errorMessage, err
+	return dataApi, res.StatusCode, err
 }

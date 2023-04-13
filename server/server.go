@@ -10,6 +10,9 @@ type Server struct {
 	server *gin.Engine
 }
 
+/*
+Inicializando servidor web para api rest
+*/
 func NewServer() Server {
 	return Server{
 		port:   "9000",

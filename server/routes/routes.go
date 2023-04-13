@@ -6,6 +6,9 @@ import (
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/controller"
 )
 
+/*
+Função responsável pela configuração de Cors, grupos de Api, middleware, segurança da API, contexto, headers e métodos gerais permitidos
+*/
 func ConfigRoutes(router *gin.Engine) *gin.Engine {
 	gin.SetMode(gin.ReleaseMode)
 	router = gin.Default()
