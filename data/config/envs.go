@@ -10,7 +10,7 @@ type Config struct {
 	DatabaseName string `env:"DB_NAME" envDefault:"code_challenge"` // Nome do Banco de Dados
 	UserDB       string `env:"DB_USER" envDefault:"postgres"`       // Usuário banco de dados
 	IsProduction bool   `env:"PRODUCTION" envDefault:"false"`       // Indicação se está em produção ou debug
-	SSLMode      bool   `env:"SSL_MDOE" envDefault:"disable"`       // Conexão SSL do banco de dados
+	SSLMode      string `env:"SSL_MDOE" envDefault:"disable"`       // Conexão SSL do banco de dados
 	HostApi      string `env:"HOST_API" envDefault:"localhost"`     // Host API
 	PortApi      string `env:"PORT_API" envDefault:"9000"`          // Porta API
 }
