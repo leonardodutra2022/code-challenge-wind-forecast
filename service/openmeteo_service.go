@@ -14,8 +14,9 @@ Função responsável pela requisição a API externa, no endpoint forecast, pas
 */
 func GetForecast(latitude float64, longitude float64) (int, input_data.ForecastInput, error) {
 	var forecastInput input_data.ForecastInput
+	currentWeather := true
 	endpoint := "forecast"
-	reqParam := strings.Join([]string{"?latitude=", utils.Float64ToString(latitude), "&longitude=", utils.Float64ToString(longitude)}, "")
+	reqParam := strings.Join([]string{"?latitude=", utils.Float64ToString(latitude), "&longitude=", utils.Float64ToString(longitude), "&current_weather=", utils.BoolToString(currentWeather)}, "")
 	dataApi, statusCode, err := openmeteo_api.GetDataRequest(endpoint + reqParam)
 	errConvert := utils.ByteToJson(dataApi, &forecastInput)
 	if errConvert != nil {

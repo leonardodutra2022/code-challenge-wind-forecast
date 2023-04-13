@@ -20,7 +20,7 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 	}))
 	routes := router.Group("api")
 	{
-		routes.GET("/forecast", controller.GetForecast)
+		routes.GET("/previsao", controller.GetForecast)
 	}
 
 	return router
