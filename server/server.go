@@ -1,7 +1,9 @@
 package server
 
 import (
+	"github.com/caarlos0/env"
 	"github.com/gin-gonic/gin"
+	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/config"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/server/routes"
 )
 
@@ -14,8 +16,10 @@ type Server struct {
 Inicializando servidor web para api rest
 */
 func NewServer() Server {
+	cfg := config.Config{}
+	env.Parse(&cfg)
 	return Server{
-		port:   "9000",
+		port:   cfg.PortApi,
 		server: gin.Default(),
 	}
 }
