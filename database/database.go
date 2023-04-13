@@ -18,7 +18,7 @@ var db *gorm.DB
 func StartDB() {
 	cfg := config.Config{}
 	env.Parse(&cfg)
-	strConnection := strings.Join([]string{"host=", cfg.HostDB, "port=", utils.IntToString(cfg.PortDB), "user=", cfg.UserDB, "dbname=", cfg.DatabaseName, "sslmode=", utils.BoolToString(cfg.SSLMode), "password=", cfg.PassDB}, "")
+	strConnection := strings.Join([]string{string("host=" + cfg.HostDB), string("port=" + utils.IntToString(cfg.PortDB)), string("user=" + cfg.UserDB), string("dbname=" + cfg.DatabaseName), string("sslmode=" + cfg.SSLMode), string("password=" + cfg.PassDB)}, " ")
 	database, err := gorm.Open(postgres.Open(strConnection), &gorm.Config{})
 	if err != nil {
 		log.Fatal("Error in database connection: ", err.Error())
