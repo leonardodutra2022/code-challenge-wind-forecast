@@ -68,9 +68,10 @@ services:
     restart: unless-stopped
 
 networks:
-  rede:
+  net:
     driver: bridge
 
 volumes:
   db-data:
   pgadmin:
+
