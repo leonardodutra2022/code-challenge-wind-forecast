@@ -11,7 +11,7 @@ import (
 /*
 Função responsável pela configuração de Cors, grupos de Api, middleware, segurança da API, contexto, headers e métodos gerais permitidos
 */
-func ConfigRoutes(router *gin.Engine) *gin.Engine {
+func ConfigRoutes() *gin.Engine {
 	cfg := config.Config{}
 	env.Parse(&cfg)
 	if cfg.IsProduction {
@@ -19,7 +19,7 @@ func ConfigRoutes(router *gin.Engine) *gin.Engine {
 	} else {
 		gin.SetMode(gin.DebugMode)
 	}
-	router = gin.Default()
+	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost"},
 		AllowMethods:     []string{"GET", "OPTIONS"},
