@@ -39,7 +39,7 @@ func CheckForecast() {
 	env.Parse(&cfg)
 	for {
 		_, forecastInput, err := GetForecastApi(cfg.LatitudeMonitor, cfg.LongitudeMonitor)
-		isAlert, windSpeedForecast := isThereAlert(forecastInput.Hourly)
+		isAlert, windSpeedForecast := IsThereAlert(forecastInput.Hourly)
 		if err == nil && isAlert {
 			if addForecast(forecastInput.Hourly, windSpeedForecast) != nil {
 				log.Fatalln(err.Error())
@@ -52,7 +52,7 @@ func CheckForecast() {
 /*
 Função que obtem os últimos registros (em 7 dias a frente como previsão) e com base em alguns parâmetros retorna se os dados indicam uma situação de alerta para a previsão obtida
 */
-func isThereAlert(fc input_data.Hourly) (bool, float64) {
+func IsThereAlert(fc input_data.Hourly) (bool, float64) {
 	windDirLen := len(fc.Winddirection180m)
 	windSpLen := len(fc.Windspeed180m)
 	return (fc.Winddirection180m[windDirLen-1] >= 130 && fc.Winddirection180m[windDirLen-1] <= 260 && fc.Windspeed180m[windSpLen-1] > 15), fc.Windspeed180m[windSpLen-1]
