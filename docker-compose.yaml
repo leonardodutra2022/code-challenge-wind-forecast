@@ -22,7 +22,7 @@ services:
       LONGITUDE: ${LONGITUDE}
       TIMEZONE: ${TIMEZONE}
     ports:
-      - 8000:${HOST_API}
+      - 8000:${PORT_API}
     links:
       - "forecast_db"
     depends_on:
