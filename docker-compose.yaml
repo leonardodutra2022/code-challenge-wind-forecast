@@ -1,0 +1,77 @@
+version: '3.1'
+
+services:
+  forecast:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: codechallenge/forecast
+    container_name: forecast
+    restart: always
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_PASS: ${DB_PASS}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      PRODUCTION: ${PRODUCTION}
+      SSL_MDOE: ${SSL_MDOE}
+      HOST_API: ${HOST_API}
+      PORT_API: ${PORT_API}
+      LATITUDE: ${LATITUDE}
+      LONGITUDE: ${LONGITUDE}
+      TIMEZONE: ${TIMEZONE}
+    ports:
+      - 8000:${PORT_API}
+    links:
+      - "forecast_db"
+    depends_on:
+      - forecast_db
+    networks:
+      - net
+
+  forecast_db:
+    image: postgres
+    restart: always
+    container_name: fcdb
+    volumes: 
+      - ./db-data/:/var/lib/postgresql/data/
+    ports: 
+      - ${DB_PORT}:5432
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      - net
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_PORT: ${DB_PORT}
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - net
+    links:
+      - "forecast_db"
+    depends_on:
+      - forecast_db
+    restart: unless-stopped
+
+networks:
+  net:
+    driver: bridge
+
+volumes:
+  db-data:
+  pgadmin:
+
