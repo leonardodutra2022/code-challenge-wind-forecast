@@ -30,7 +30,7 @@ func GetForecast(c *gin.Context) {
 	}
 
 	var forecastOutput output_data.ForecastOutput
-	statusCode, forecastInput, err := service.GetForecast(queryParams.Latitude, queryParams.Longitude)
+	statusCode, forecastInput, err := service.GetForecastApi(queryParams.Latitude, queryParams.Longitude)
 	forecastOutput = adapter.ForecastInputToOutput(forecastInput)
 	if err != nil {
 		c.JSON(statusCode, gin.H{
