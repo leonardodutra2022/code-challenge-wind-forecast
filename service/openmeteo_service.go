@@ -31,6 +31,9 @@ func GetForecastApi(latitude float64, longitude float64) (int, input_data.Foreca
 	return statusCode, forecastInput, err
 }
 
+/*
+Função executada em background em que frequentemente executa a cada 5 minutos para requisitar API externa e fazer verificações para persistir em banco de dados
+*/
 func CheckForecast() {
 	cfg := config.Config{}
 	env.Parse(&cfg)
@@ -46,12 +49,18 @@ func CheckForecast() {
 	}
 }
 
+/*
+Função que obtem os últimos registros (em 7 dias a frente como previsão) e com base em alguns parâmetros retorna se os dados indicam uma situação de alerta para a previsão obtida
+*/
 func isThereAlert(fc input_data.Hourly) (bool, float64) {
 	windDirLen := len(fc.Winddirection180m)
 	windSpLen := len(fc.Windspeed180m)
 	return (fc.Winddirection180m[windDirLen-1] >= 130 && fc.Winddirection180m[windDirLen-1] <= 260 && fc.Windspeed180m[windSpLen-1] > 15), fc.Windspeed180m[windSpLen-1]
 }
 
+/*
+Função para realizar o registro em banco de dados como alerta indicado pela função isThereAlert
+*/
 func addForecast(forecastHourly input_data.Hourly, windSpeedForecast float64) error {
 	db := database.GetDatabase()
 	forecast := model.Forecast{}

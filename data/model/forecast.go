@@ -2,6 +2,9 @@ package model
 
 import "time"
 
+/*
+Estrutura de dados para persistência em banco de dados
+*/
 type Forecast struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`
 	Vel       float64   `json:"vel"`        // Velocidade

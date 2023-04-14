@@ -15,6 +15,9 @@ import (
 
 var db *gorm.DB
 
+/*
+Função para inicializar configuração do banco de dados
+*/
 func StartDB() {
 	cfg := config.Config{}
 	env.Parse(&cfg)
@@ -32,6 +35,9 @@ func StartDB() {
 	migrations.RunMigrations(db)
 }
 
+/*
+Função para obter uma instância de configuração do banco de dados
+*/
 func GetDatabase() *gorm.DB {
 	return db
 }
