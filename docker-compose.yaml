@@ -1,0 +1,46 @@
+version: '3.1'
+
+services:
+  forecast:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    image: codechallenge/forecast
+    container_name: forecast
+    restart: always
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_PASS: ${DB_PASS}
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      PRODUCTION: ${PRODUCTION}
+      SSL_MDOE: ${SSL_MDOE}
+      HOST_API: ${HOST_API}
+      PORT_API: ${PORT_API}
+      LATITUDE: ${LATITUDE}
+      LONGITUDE: ${LONGITUDE}
+      TIMEZONE: ${TIMEZONE}
+    ports:
+      - 8000:${HOST_API}
+    networks:
+      - net
+
+  forecast_db:
+    image: postgres
+    restart: always
+    container_name: fcdb
+    volumes: 
+      - ./db-data/:/var/lib/postgresql/data/
+    ports: 
+      - ${DB_PORT}:5432
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ${DB_NAME}
+    networks:
+      - net
+
+networks:
+  rede:
+    driver: bridge
