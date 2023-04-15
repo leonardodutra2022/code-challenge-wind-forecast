@@ -12,6 +12,28 @@ Ao realizar git clone do projeto, acesse o diretório do mesmo e execute:
 3. Para compilar a aplicação ``go build``
 
 
+
+# Teste 
+
+Para executar testes no projeto, ao acessar esse diretório, execute ``go test ./...``.
+
+
+### Cobertura dos testes
+
+Para verificar quanto está a cobertura dos testes no projeto, execute: 
+
+````
+    go test -coverprofile=coverage ./...
+````
+
+Em seguida:
+
+````
+    go tool cover -html=coverage
+````
+
+
+
 # Infra
 
 Os arquivos **`Dockerfile`** e **`docker-compose.yaml`** são responsáveis por gerar os recursos de infra e configuração necessários para a(as) aplicação(ções) executar(em), como: ***portas de acesso***, ***banco de dados***, ***senhas de acesso***, ***rede interna*** para acesso entre as mesmas. Eis abaixo algumas recomendações para o respectivo projeto:
