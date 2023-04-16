@@ -41,7 +41,7 @@ func CheckForecast(testing bool) error {
 		isAlert, windSpeedForecast := IsThereAlert(forecastInput.Hourly)
 		if err == nil {
 			if isAlert {
-				if addForecast(forecastInput.Hourly, windSpeedForecast) != nil {
+				if AddForecast(forecastInput.Hourly, windSpeedForecast) != nil {
 					return errors.New("erro ao registrar informação de alerta no banco de dados")
 				}
 			}
@@ -70,7 +70,7 @@ func IsThereAlert(fc input_data.Hourly) (bool, float64) {
 /*
 Função para realizar o registro em banco de dados como alerta indicado pela função isThereAlert
 */
-func addForecast(forecastHourly input_data.Hourly, windSpeedForecast float64) error {
+func AddForecast(forecastHourly input_data.Hourly, windSpeedForecast float64) error {
 	db := database.GetDatabase()
 	forecast := model.Forecast{}
 	forecast.Alerta = windSpeedForecast > 20
