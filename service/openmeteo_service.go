@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"log"
 	"strings"
 	"time"
 
@@ -34,19 +33,29 @@ func GetForecastApi(latitude float64, longitude float64) (int, input_data.Foreca
 /*
 Função executada em background em que frequentemente executa a cada 5 minutos para requisitar API externa e fazer verificações para persistir em banco de dados
 */
-func CheckForecast() {
+func CheckForecast(testing bool) error {
 	cfg := config.Config{}
 	env.Parse(&cfg)
 	for {
 		_, forecastInput, err := GetForecastApi(cfg.LatitudeMonitor, cfg.LongitudeMonitor)
 		isAlert, windSpeedForecast := IsThereAlert(forecastInput.Hourly)
-		if err == nil && isAlert {
-			if addForecast(forecastInput.Hourly, windSpeedForecast) != nil {
-				log.Fatalln(err.Error())
+		if err == nil {
+			if isAlert {
+				if addForecast(forecastInput.Hourly, windSpeedForecast) != nil {
+					return errors.New("erro ao registrar informação de alerta no banco de dados")
+				}
 			}
+		} else {
+			return errors.New("erro ao requisitar informações da API")
 		}
-		time.Sleep(5 * time.Minute)
+		if testing {
+			time.Sleep(time.Duration(5 * 1e9)) // alterando para 5 segundos o tempo periódico para requisitar API
+			break
+		} else {
+			time.Sleep(time.Duration(cfg.CheckTimeInSeconds * 1e9))
+		}
 	}
+	return nil
 }
 
 /*

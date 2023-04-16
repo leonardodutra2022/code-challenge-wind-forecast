@@ -8,7 +8,7 @@ import (
 
 func main() {
 	go database.StartDB()
-	go service.CheckForecast()
+	go service.CheckForecast(false)
 	server := server.NewServer()
 	server.Run()
 }
