@@ -29,6 +29,7 @@ func ConfigRoutes() *gin.Engine {
 	routes := router.Group("api")
 	{
 		routes.GET("/previsao", controller.GetForecast)
+		routes.GET("/checkHealth", controller.CheckHealth)
 	}
 
 	return router

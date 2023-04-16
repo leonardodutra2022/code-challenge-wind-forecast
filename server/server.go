@@ -7,7 +7,7 @@ import (
 )
 
 type Server struct {
-	port string
+	Port string
 }
 
 /*
@@ -17,11 +17,11 @@ func NewServer() Server {
 	cfg := config.Config{}
 	env.Parse(&cfg)
 	return Server{
-		port: cfg.PortApi,
+		Port: cfg.PortApi,
 	}
 }
 
 func (s *Server) Run() {
 	router := routes.ConfigRoutes()
-	router.Run(":" + s.port)
+	router.Run(":" + s.Port)
 }

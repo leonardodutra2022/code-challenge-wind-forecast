@@ -55,7 +55,10 @@ func TestByteToJsonValues(t *testing.T) {
 
 func TestDateStringToTime(t *testing.T) {
 	dateStr := "2023-04-14T18:00"
+	dateStrError := "01-01-01"
 	timeLocal, _ := time.LoadLocation("America/Sao_Paulo")
 	dateTest := time.Date(2023, time.April, 14, 18, 0, 0, 0, timeLocal)
+	dateTestError := time.Time{}
 	assert.Equal(t, dateTest, utils.DateStringToTime(dateStr), "a data convertida a partir de uma string para time.Time deve ser equivalente")
+	assert.Equal(t, dateTestError, utils.DateStringToTime(dateStrError), "a data convertida com erro propositalmente a partir de uma string para time.Time deve ser equivalente")
 }
