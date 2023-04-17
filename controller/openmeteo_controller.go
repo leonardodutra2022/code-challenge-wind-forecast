@@ -1,10 +1,13 @@
 package controller
 
 import (
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/adapter"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/output_data"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/service"
+	"github.com/leonardodutra2022/code-challenge-wind-forecast/utils"
 )
 
 /*
@@ -37,6 +40,15 @@ func GetForecast(c *gin.Context) {
 		})
 		return
 	}
+	queryApiLastDate, err := service.FindLastQueryApi()
+	if err != nil {
+		c.JSON(400, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	forecastOutput.DateLastQueryApi = queryApiLastDate.DateLastQueryApi.Format(time.RFC822Z)
+	forecastOutput.DateTime = utils.DateStringToTime(forecastOutput.DateTime).Format(time.RFC822Z)
 	c.JSON(statusCode,
 		forecastOutput,
 	)
