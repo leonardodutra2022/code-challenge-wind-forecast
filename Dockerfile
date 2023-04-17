@@ -14,6 +14,12 @@ RUN go mod verify
 
 COPY . .
 
+ENV TEST_MODE=true
+
+RUN go test ./...
+
+ENV TEST_MODE=false
+
 RUN go build -v -o /usr/local/bin/app
 
 CMD ["app"]
