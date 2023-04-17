@@ -63,7 +63,20 @@ func GetAlerts(c *gin.Context) {
 		})
 		return
 	}
+	queryApiLastDate, err := service.FindLastQueryApi()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	var forecastAlertsOutputs []output_data.ForecastAlertOutput
+	for _, fcAlert := range forecastAlerts {
+		fcOutputAdapter := adapter.ForecastToForecastAlertOutput(fcAlert)
+		fcOutputAdapter.DateLastQueryApi = queryApiLastDate.DateLastQueryApi.Format(time.RFC822Z)
+		forecastAlertsOutputs = append(forecastAlertsOutputs, fcOutputAdapter)
+	}
 	c.JSON(http.StatusOK,
-		forecastAlerts,
+		forecastAlertsOutputs,
 	)
 }
