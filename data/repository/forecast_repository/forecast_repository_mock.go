@@ -1,14 +1,15 @@
-package repository
+package forecast_repository
 
 import (
 	"errors"
 	"time"
 
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/model"
+	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/repository"
 )
 
 type IForecastRepositoryMock interface {
-	IRepository
+	repository.IRepository
 }
 
 type RepositoryMock struct {

@@ -1,12 +1,13 @@
-package repository
+package forecast_repository
 
 import (
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/model"
+	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/repository"
 	"gorm.io/gorm"
 )
 
 type IForecastRepository interface {
-	IRepository
+	repository.IRepository
 }
 
 type Repository struct {
