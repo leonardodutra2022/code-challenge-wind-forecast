@@ -30,6 +30,7 @@ func ConfigRoutes() *gin.Engine {
 	{
 		routes.GET("/previsao", controller.GetForecast)
 		routes.GET("/checkHealth", controller.CheckHealth)
+		routes.GET("/alerta", controller.GetAlerts)
 	}
 
 	return router

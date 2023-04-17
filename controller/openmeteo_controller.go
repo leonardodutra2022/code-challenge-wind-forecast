@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -24,7 +25,7 @@ Função controller para a rota forecast da API local
 func GetForecast(c *gin.Context) {
 	var queryParams QueryString
 	if c.ShouldBindQuery(&queryParams) != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error":           "Parametro não informado",
 			"latitude_param":  queryParams.Latitude,
 			"longitude_param": queryParams.Longitude,
@@ -42,7 +43,7 @@ func GetForecast(c *gin.Context) {
 	}
 	queryApiLastDate, err := service.FindLastQueryApi()
 	if err != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
@@ -51,5 +52,18 @@ func GetForecast(c *gin.Context) {
 	forecastOutput.DateTime = utils.DateStringToTime(forecastOutput.DateTime).Format(time.RFC822Z)
 	c.JSON(statusCode,
 		forecastOutput,
+	)
+}
+
+func GetAlerts(c *gin.Context) {
+	forecastAlerts, err := service.GetForecastAlerts()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK,
+		forecastAlerts,
 	)
 }

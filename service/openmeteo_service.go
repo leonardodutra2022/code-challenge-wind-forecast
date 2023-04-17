@@ -106,3 +106,12 @@ func AddForecast(testing bool, forecastHourly input_data.Hourly, windSpeedForeca
 
 	return nil
 }
+
+func GetForecastAlerts() ([]model.Forecast, error) {
+	repo := forecast_repository.Repository{DBGo: database.GetDatabase()}
+	list, err := repo.GetAlertByStatus(true)
+	if err != nil {
+		return []model.Forecast{}, errors.New("erro ao obter lista de alerta em previsões")
+	}
+	return *list, err
+}

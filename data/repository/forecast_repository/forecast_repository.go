@@ -23,3 +23,9 @@ func (f Repository) GetAll() (*[]model.Forecast, error) {
 	err := f.DBGo.Find(&forecasts).Error
 	return &forecasts, err
 }
+
+func (f Repository) GetAlertByStatus(status bool) (*[]model.Forecast, error) {
+	forecasts := []model.Forecast{}
+	err := f.DBGo.Where(&model.Forecast{Alerta: status}).Find(&forecasts).Error
+	return &forecasts, err
+}

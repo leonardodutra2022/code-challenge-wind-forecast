@@ -5,4 +5,5 @@ type IRepository interface {
 	GetAll() ([]interface{}, error)
 	GetOne() (interface{}, error)
 	Updates(obj interface{}) (interface{}, error)
+	GetAlertByStatus(status bool) ([]interface{}, error)
 }
