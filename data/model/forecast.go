@@ -3,7 +3,7 @@ package model
 import "time"
 
 /*
-Estrutura de dados para persistência em banco de dados
+Estrutura de dados para persistência em banco de dados, sobre a previsão do tempo
 */
 type Forecast struct {
 	ID        uint      `json:"id" gorm:"primaryKey"`

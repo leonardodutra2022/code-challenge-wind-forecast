@@ -1,7 +1,7 @@
 package output_data
 
 /*
-Estrutura de dados que representa um conjunto de dados de saída para o usuário num enpoint.
+Estrutura de dados que representa um conjunto de dados de saída para o usuário no enpoint de previsão.
 */
 type ForecastOutput struct {
 	WindSpeed        float64 `json:"velocidade_vento"`    // Velocidade do Vento
