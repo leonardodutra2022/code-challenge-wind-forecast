@@ -1,10 +1,14 @@
 package controller
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/adapter"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/output_data"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/service"
+	"github.com/leonardodutra2022/code-challenge-wind-forecast/utils"
 )
 
 /*
@@ -21,7 +25,7 @@ Função controller para a rota forecast da API local
 func GetForecast(c *gin.Context) {
 	var queryParams QueryString
 	if c.ShouldBindQuery(&queryParams) != nil {
-		c.JSON(400, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error":           "Parametro não informado",
 			"latitude_param":  queryParams.Latitude,
 			"longitude_param": queryParams.Longitude,
@@ -37,7 +41,42 @@ func GetForecast(c *gin.Context) {
 		})
 		return
 	}
+	queryApiLastDate, err := service.FindLastQueryApi()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	forecastOutput.DateLastQueryApi = queryApiLastDate.DateLastQueryApi.Format(time.RFC822Z)
+	forecastOutput.DateTime = utils.DateStringToTime(forecastOutput.DateTime).Format(time.RFC822Z)
 	c.JSON(statusCode,
 		forecastOutput,
+	)
+}
+
+func GetAlerts(c *gin.Context) {
+	forecastAlerts, err := service.GetForecastAlerts()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	queryApiLastDate, err := service.FindLastQueryApi()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	var forecastAlertsOutputs []output_data.ForecastAlertOutput
+	for _, fcAlert := range forecastAlerts {
+		fcOutputAdapter := adapter.ForecastToForecastAlertOutput(fcAlert)
+		fcOutputAdapter.DateLastQueryApi = queryApiLastDate.DateLastQueryApi.Format(time.RFC822Z)
+		forecastAlertsOutputs = append(forecastAlertsOutputs, fcOutputAdapter)
+	}
+	c.JSON(http.StatusOK,
+		forecastAlertsOutputs,
 	)
 }

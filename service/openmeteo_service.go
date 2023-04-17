@@ -11,7 +11,7 @@ import (
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/config"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/input_data"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/model"
-	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/repository"
+	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/repository/forecast_repository"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/database"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/utils"
 )
@@ -59,6 +59,10 @@ func CheckForecast(testing bool, fHourlyTest input_data.Hourly) error {
 		} else {
 			return errors.New("erro ao requisitar informações da API")
 		}
+		_, err = FindLastQueryApi()
+		if err != nil {
+			return errors.New("erro ao registrar informação da última consulta")
+		}
 		if testing {
 			time.Sleep(time.Duration(5 * 1e9)) // alterando para 5 segundos o tempo periódico para requisitar API
 			break
@@ -89,16 +93,25 @@ func AddForecast(testing bool, forecastHourly input_data.Hourly, windSpeedForeca
 	forecast.Vel = forecastHourly.Windspeed180m[len(forecastHourly.Windspeed180m)-1]
 
 	if !testing {
-		repo := repository.Repository{DBGo: database.GetDatabase()}
+		repo := forecast_repository.Repository{DBGo: database.GetDatabase()}
 		if err := repo.Create(&forecast); err != nil {
 			return errors.New("erro ao cadastrar alerta de tempestade")
 		}
 	} else {
-		repo := repository.RepositoryMock{}
+		repo := forecast_repository.RepositoryMock{}
 		if err := repo.Create(forecast); err != nil {
 			return errors.New("erro ao cadastrar alerta de tempestade - Mock")
 		}
 	}
 
 	return nil
+}
+
+func GetForecastAlerts() ([]model.Forecast, error) {
+	repo := forecast_repository.Repository{DBGo: database.GetDatabase()}
+	list, err := repo.GetAlertByStatus(true)
+	if err != nil {
+		return []model.Forecast{}, errors.New("erro ao obter lista de alerta em previsões")
+	}
+	return *list, err
 }
