@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"log"
 	"strings"
 	"time"
 
@@ -38,6 +39,7 @@ func CheckForecast(testing bool, fHourlyTest input_data.Hourly) error {
 	cfg := config.Config{}
 	env.Parse(&cfg)
 	for {
+		log.SetFlags(4)
 		_, forecastInput, err := GetForecastApi(cfg.LatitudeMonitor, cfg.LongitudeMonitor)
 		var objHourly = input_data.Hourly{}
 		if testing {
@@ -46,8 +48,10 @@ func CheckForecast(testing bool, fHourlyTest input_data.Hourly) error {
 			objHourly = forecastInput.Hourly
 		}
 		isAlert, windSpeedForecast := IsThereAlert(objHourly)
+		log.Println("INFO: ", "Consultando API. ", "Velocidade do Vento: ", windSpeedForecast, "km/h")
 		if err == nil {
 			if isAlert {
+				log.Println("INFO: ", "Alerta de Tempestade! ", "Velocidade do Vento: ", windSpeedForecast, "km/h")
 				if AddForecast(testing, forecastInput.Hourly, windSpeedForecast) != nil {
 					return errors.New("erro ao registrar informação de alerta no banco de dados")
 				}
