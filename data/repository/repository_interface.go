@@ -1,5 +1,8 @@
 package repository
 
+/*
+Interface modelo para os demais repositórios
+*/
 type IRepository interface {
 	Create(interface{}) error
 	GetAll() ([]interface{}, error)

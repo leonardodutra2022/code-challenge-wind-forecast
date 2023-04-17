@@ -20,7 +20,7 @@ type QueryString struct {
 }
 
 /*
-Função controller para a rota forecast da API local
+Função controller para a rota forecast (previsão) da API local
 */
 func GetForecast(c *gin.Context) {
 	var queryParams QueryString
@@ -55,6 +55,9 @@ func GetForecast(c *gin.Context) {
 	)
 }
 
+/*
+Função controller para a rota de alertas de previsão de tempestade
+*/
 func GetAlerts(c *gin.Context) {
 	forecastAlerts, err := service.GetForecastAlerts()
 	if err != nil {
