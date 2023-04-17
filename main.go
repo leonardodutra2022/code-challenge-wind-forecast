@@ -9,8 +9,8 @@ import (
 )
 
 func main() {
-	go database.StartDB(false, config.Config{})          // inicializando conexão com DB
-	go service.CheckForecast(false, input_data.Hourly{}) // inicializando serviço em background que verifica a API periodicamente
-	server := server.NewServer()                         // definindo configuração para o serviço Rest API
-	server.Run()                                         // inicializando o serviço Rest
+	go database.StartDB(false, config.Config{})   // inicializando conexão com DB
+	go service.CheckForecast(input_data.Hourly{}) // inicializando serviço em background que verifica a API periodicamente
+	server := server.NewServer()                  // definindo configuração para o serviço Rest API
+	server.Run()                                  // inicializando o serviço Rest
 }

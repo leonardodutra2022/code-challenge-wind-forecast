@@ -16,6 +16,12 @@ import (
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/utils"
 )
 
+var cfg config.Config
+
+func init() {
+	env.Parse(&cfg)
+}
+
 /*
 Função responsável pela requisição a API externa, no endpoint forecast, passando alguns parâmetros
 */
@@ -35,14 +41,12 @@ func GetForecastApi(latitude float64, longitude float64) (int, input_data.Foreca
 /*
 Função executada em background em que frequentemente executa a cada 5 minutos para requisitar API externa e fazer verificações para persistir em banco de dados
 */
-func CheckForecast(testing bool, fHourlyTest input_data.Hourly) error {
-	cfg := config.Config{}
-	env.Parse(&cfg)
+func CheckForecast(fHourlyTest input_data.Hourly) error {
 	for {
 		log.SetFlags(4)
 		_, forecastInput, err := GetForecastApi(cfg.LatitudeMonitor, cfg.LongitudeMonitor)
 		var objHourly = input_data.Hourly{}
-		if testing {
+		if cfg.IsTestMode {
 			objHourly = fHourlyTest
 		} else {
 			objHourly = forecastInput.Hourly
@@ -52,18 +56,20 @@ func CheckForecast(testing bool, fHourlyTest input_data.Hourly) error {
 		if err == nil {
 			if isAlert {
 				log.Println("INFO: ", "Alerta de Tempestade! ", "Velocidade do Vento: ", windSpeedForecast, "km/h")
-				if AddForecast(testing, forecastInput.Hourly, windSpeedForecast) != nil {
+				if AddForecast(forecastInput.Hourly, windSpeedForecast) != nil {
 					return errors.New("erro ao registrar informação de alerta no banco de dados")
 				}
 			}
 		} else {
 			return errors.New("erro ao requisitar informações da API")
 		}
-		_, err = FindLastQueryApi()
+		if !cfg.IsTestMode {
+			_, err = FindLastQueryApi()
+		}
 		if err != nil {
 			return errors.New("erro ao registrar informação da última consulta")
 		}
-		if testing {
+		if cfg.IsTestMode {
 			time.Sleep(time.Duration(5 * 1e9)) // alterando para 5 segundos o tempo periódico para requisitar API
 			break
 		} else {
@@ -85,14 +91,14 @@ func IsThereAlert(fc input_data.Hourly) (bool, float64) {
 /*
 Função para realizar o registro em banco de dados como alerta indicado pela função isThereAlert
 */
-func AddForecast(testing bool, forecastHourly input_data.Hourly, windSpeedForecast float64) error {
+func AddForecast(forecastHourly input_data.Hourly, windSpeedForecast float64) error {
 	forecast := model.Forecast{}
 	forecast.Alerta = windSpeedForecast > 20
 	forecast.Data = utils.DateStringToTime(forecastHourly.Time[len(forecastHourly.Time)-1])
 	forecast.Dir = forecastHourly.Winddirection180m[len(forecastHourly.Winddirection180m)-1]
 	forecast.Vel = forecastHourly.Windspeed180m[len(forecastHourly.Windspeed180m)-1]
 
-	if !testing {
+	if !cfg.IsTestMode {
 		repo := forecast_repository.Repository{DBGo: database.GetDatabase()}
 		if err := repo.Create(&forecast); err != nil {
 			return errors.New("erro ao cadastrar alerta de tempestade")
@@ -108,10 +114,29 @@ func AddForecast(testing bool, forecastHourly input_data.Hourly, windSpeedForeca
 }
 
 func GetForecastAlerts() ([]model.Forecast, error) {
-	repo := forecast_repository.Repository{DBGo: database.GetDatabase()}
-	list, err := repo.GetAlertByStatus(true)
+	var repo forecast_repository.Repository
+	var list []model.Forecast
+	var err error
+	if !cfg.IsTestMode {
+		repo = forecast_repository.Repository{DBGo: database.GetDatabase()}
+		list, err = repo.GetAlertByStatus(true)
+	} else {
+		list = []model.Forecast{{
+			ID:     1,
+			Vel:    10.0,
+			Dir:    100.0,
+			Alerta: false,
+			Data:   time.Now(),
+		}, {
+			ID:     2,
+			Vel:    25.0,
+			Dir:    250.0,
+			Alerta: true,
+			Data:   time.Now(),
+		}}
+	}
 	if err != nil {
 		return []model.Forecast{}, errors.New("erro ao obter lista de alerta em previsões")
 	}
-	return *list, err
+	return list, err
 }

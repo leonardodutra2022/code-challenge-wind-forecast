@@ -33,8 +33,8 @@ func (f Repository) GetAll() (*[]model.Forecast, error) {
 /*
 Função responsável por obter alertas por status em banco de dados sobre a previsão do tempo
 */
-func (f Repository) GetAlertByStatus(status bool) (*[]model.Forecast, error) {
+func (f Repository) GetAlertByStatus(status bool) ([]model.Forecast, error) {
 	forecasts := []model.Forecast{}
 	err := f.DBGo.Where(&model.Forecast{Alerta: status}).Find(&forecasts).Error
-	return &forecasts, err
+	return forecasts, err
 }
