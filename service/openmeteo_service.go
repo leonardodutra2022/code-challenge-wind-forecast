@@ -59,7 +59,9 @@ func CheckForecast(testing bool, fHourlyTest input_data.Hourly) error {
 		} else {
 			return errors.New("erro ao requisitar informações da API")
 		}
-		_, err = FindLastQueryApi()
+		if !cfg.IsTestMode {
+			_, err = FindLastQueryApi()
+		}
 		if err != nil {
 			return errors.New("erro ao registrar informação da última consulta")
 		}

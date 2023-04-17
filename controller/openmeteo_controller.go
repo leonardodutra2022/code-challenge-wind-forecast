@@ -4,8 +4,11 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/caarlos0/env"
 	"github.com/gin-gonic/gin"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/adapter"
+	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/config"
+	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/model"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/output_data"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/service"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/utils"
@@ -23,6 +26,8 @@ type QueryString struct {
 Função controller para a rota forecast (previsão) da API local
 */
 func GetForecast(c *gin.Context) {
+	cfg := config.Config{}
+	env.Parse(&cfg)
 	var queryParams QueryString
 	if c.ShouldBindQuery(&queryParams) != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -41,7 +46,15 @@ func GetForecast(c *gin.Context) {
 		})
 		return
 	}
-	queryApiLastDate, err := service.FindLastQueryApi()
+	var queryApiLastDate model.QueryApi
+	if cfg.IsTestMode {
+		queryApiLastDate = model.QueryApi{
+			ID:               1,
+			DateLastQueryApi: time.Now(),
+		}
+	} else {
+		queryApiLastDate, err = service.FindLastQueryApi()
+	}
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
