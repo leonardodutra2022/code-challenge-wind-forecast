@@ -15,12 +15,14 @@ services:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
       PRODUCTION: ${PRODUCTION}
+      TEST_MODE: ${TEST_MODE}
       SSL_MDOE: ${SSL_MDOE}
       HOST_API: ${HOST_API}
       PORT_API: ${PORT_API}
       LATITUDE: ${LATITUDE}
       LONGITUDE: ${LONGITUDE}
       TIMEZONE: ${TIMEZONE}
+      CHECKTIME_SECONDS: ${CHECKTIME_SECONDS}
     ports:
       - 8000:${PORT_API}
     links:
