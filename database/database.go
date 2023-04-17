@@ -18,9 +18,10 @@ var db *gorm.DB
 /*
 Função para inicializar configuração do banco de dados
 */
-func StartDB() {
-	cfg := config.Config{}
-	env.Parse(&cfg)
+func StartDB(testing bool, cfg config.Config) {
+	if !testing {
+		env.Parse(&cfg)
+	}
 	strConnection := strings.Join([]string{string("host=" + cfg.HostDB), string("port=" + utils.IntToString(cfg.PortDB)), string("user=" + cfg.UserDB), string("dbname=" + cfg.DatabaseName), string("sslmode=" + cfg.SSLMode), string("password=" + cfg.PassDB)}, " ")
 	database, err := gorm.Open(postgres.Open(strConnection), &gorm.Config{})
 	if err != nil {
