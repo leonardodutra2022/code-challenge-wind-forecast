@@ -41,10 +41,10 @@ func TestCheckForecast(t *testing.T) {
 		Windspeed180m:     []float64{17.5, 18.0},
 		Winddirection180m: []float64{161.1, 160.0},
 	}
-	errTestCheckForecast := service.CheckForecast(true, obj)
+	errTestCheckForecast := service.CheckForecast(obj)
 	assert.Nil(t, errTestCheckForecast, "deve ocorrer a checkagem de alerta sem erro")
 
-	checkForecastAlert := service.CheckForecast(true, obj)
+	checkForecastAlert := service.CheckForecast(obj)
 	assert.Nil(t, checkForecastAlert, "deve ocorrer adição de alerta sem erro")
 }
 
@@ -55,6 +55,12 @@ func TestAddForecast(t *testing.T) {
 		Time:              []string{"2023-01-01T05:00", "2023-01-01T06:00", "2023-01-01T07:00"},
 	}
 
-	err := service.AddForecast(true, objTest, 21)
+	err := service.AddForecast(objTest, 21)
 	assert.Nil(t, err, "deve ocorrer registro do alerta sem erro")
+}
+
+func TestGetForecastAlerts(t *testing.T) {
+	list, err := service.GetForecastAlerts()
+	assert.Nil(t, err, "deve obter a lista sem erro")
+	assert.Len(t, list, 2, "deve conter 2 itens na lista")
 }

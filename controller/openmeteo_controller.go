@@ -72,14 +72,45 @@ func GetForecast(c *gin.Context) {
 Função controller para a rota de alertas de previsão de tempestade
 */
 func GetAlerts(c *gin.Context) {
-	forecastAlerts, err := service.GetForecastAlerts()
+	cfg := config.Config{}
+	env.Parse(&cfg)
+	var forecastAlerts []model.Forecast
+	var err error
+	if !cfg.IsTestMode {
+		forecastAlerts, err = service.GetForecastAlerts()
+	} else {
+		forecastAlerts = []model.Forecast{
+			{
+				ID:     1,
+				Vel:    10.,
+				Dir:    100.0,
+				Alerta: false,
+				Data:   time.Now(),
+			},
+			{
+				ID:     2,
+				Vel:    20.,
+				Dir:    200.0,
+				Alerta: true,
+				Data:   time.Now(),
+			},
+		}
+	}
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
 	}
-	queryApiLastDate, err := service.FindLastQueryApi()
+	var queryApiLastDate model.QueryApi
+	if cfg.IsTestMode {
+		queryApiLastDate = model.QueryApi{
+			ID:               1,
+			DateLastQueryApi: time.Now(),
+		}
+	} else {
+		queryApiLastDate, err = service.FindLastQueryApi()
+	}
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),

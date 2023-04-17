@@ -15,7 +15,11 @@ Ao realizar git clone do projeto, acesse o diretório do mesmo e execute:
 
 # Teste 
 
-Para executar testes no projeto, ao acessar esse diretório, execute ``go test ./...``.
+Para executar testes no projeto, ao acessar esse diretório, execute:
+
+````
+    TEST_MODE=true go test ./...
+````
 
 
 ### Cobertura dos testes
@@ -23,7 +27,7 @@ Para executar testes no projeto, ao acessar esse diretório, execute ``go test .
 Para verificar quanto está a cobertura dos testes no projeto, execute: 
 
 ````
-    go test -coverprofile=coverage ./...
+    TEST_MODE=true  go test -coverprofile=coverage ./...
 ````
 
 Em seguida:
