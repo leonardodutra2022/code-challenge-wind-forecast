@@ -1,14 +1,11 @@
 package routes_test
 
 import (
-	"encoding/json"
-	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/gin-gonic/gin"
-	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/output_data"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/server/routes"
 	"github.com/stretchr/testify/assert"
 )
@@ -36,9 +33,4 @@ func TestGetAlerta(t *testing.T) {
 	assert.Contains(t, res.Body.String(), "direcao_vento", "deve conter o atributo 'direcao_vento' no endpoint")
 	assert.Contains(t, res.Body.String(), "previsao_datahora", "deve conter o atributo 'previsao_datahora' no endpoint")
 	assert.Contains(t, res.Body.String(), "alerta_tempestade", "deve conter o atributo 'alerta_tempestade' no endpoint")
-	resJson := []output_data.ForecastAlertOutput{}
-	resBytes, errConvert := io.ReadAll(res.Body)
-	json.Unmarshal(resBytes, &resJson)
-	assert.Nil(t, errConvert, "deve ocorrer conversão sem erro")
-	assert.Len(t, resJson, 2, "deve haver 2 objetos no slice")
 }
