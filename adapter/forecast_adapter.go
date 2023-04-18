@@ -31,3 +31,19 @@ func ForecastToForecastAlertOutput(forecastAlerts model.Forecast) output_data.Fo
 	forecastOutput.DateTime = forecastAlerts.Data.Format(time.RFC822Z)
 	return forecastOutput
 }
+
+/*
+Adapter para duas estrutura de dados, onde uma há tipos de dados distintos entre dados oriundos do banco de dados, nesse caso para o endpoint previsão
+*/
+func ForecastsToForecastOutput(forecastAlerts []model.Forecast) []output_data.ForecastOutput {
+	var forecastsOuts []output_data.ForecastOutput
+	for _, f := range forecastAlerts {
+		forecastOutput := output_data.ForecastOutput{}
+		forecastOutput.WindDirection = f.Dir
+		forecastOutput.WindSpeed = f.Vel
+		forecastOutput.DateTime = f.Data.Format(time.RFC822Z)
+		forecastsOuts = append(forecastsOuts, forecastOutput)
+
+	}
+	return forecastsOuts
+}

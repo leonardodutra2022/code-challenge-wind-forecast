@@ -24,10 +24,10 @@ func (f Repository) Create(forecast *model.Forecast) error {
 /*
 Função responsável por obter todos os registros em banco de dados sobre a previsão do tempo
 */
-func (f Repository) GetAll() (*[]model.Forecast, error) {
+func (f Repository) GetAll() ([]model.Forecast, error) {
 	forecasts := []model.Forecast{}
 	err := f.DBGo.Find(&forecasts).Error
-	return &forecasts, err
+	return forecasts, err
 }
 
 /*

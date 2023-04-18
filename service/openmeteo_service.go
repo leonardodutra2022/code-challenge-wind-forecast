@@ -113,6 +113,9 @@ func AddForecast(forecastHourly input_data.Hourly, windSpeedForecast float64) er
 	return nil
 }
 
+/*
+Função responsável por obter registros em banco de dados com status de alerta
+*/
 func GetForecastAlerts() ([]model.Forecast, error) {
 	var repo forecast_repository.Repository
 	var list []model.Forecast
@@ -120,6 +123,37 @@ func GetForecastAlerts() ([]model.Forecast, error) {
 	if !cfg.IsTestMode {
 		repo = forecast_repository.Repository{DBGo: database.GetDatabase()}
 		list, err = repo.GetAlertByStatus(true)
+	} else {
+		list = []model.Forecast{{
+			ID:     1,
+			Vel:    10.0,
+			Dir:    100.0,
+			Alerta: false,
+			Data:   time.Now(),
+		}, {
+			ID:     2,
+			Vel:    25.0,
+			Dir:    250.0,
+			Alerta: true,
+			Data:   time.Now(),
+		}}
+	}
+	if err != nil {
+		return []model.Forecast{}, errors.New("erro ao obter lista de alerta em previsões")
+	}
+	return list, err
+}
+
+/*
+Função responsável por obter registros em banco de dados de previsão sem distinção de alerta
+*/
+func GetAllForecast() ([]model.Forecast, error) {
+	var repo forecast_repository.Repository
+	var list []model.Forecast
+	var err error
+	if !cfg.IsTestMode {
+		repo = forecast_repository.Repository{DBGo: database.GetDatabase()}
+		list, err = repo.GetAll()
 	} else {
 		list = []model.Forecast{{
 			ID:     1,
