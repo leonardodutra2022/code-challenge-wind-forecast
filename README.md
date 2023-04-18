@@ -12,6 +12,21 @@ Ao realizar git clone do projeto, acesse o diretório do mesmo e execute:
 3. Para compilar a aplicação ``go build``
 
 
+### Mais informações
+
+Ao executar a API, estará executando na porta ``9000``, com endpoins em:
+
+Previsão
+````
+    http://localhost:9000/api/previsao
+````
+
+Alertas
+````
+    http://localhost:9000/api/alerta
+````
+
+
 
 # Teste 
 
@@ -77,3 +92,8 @@ Copie o arquivo ``.env.example`` para ``.env`` e atualize seus valores, essas va
 ### Comandos para executar a Infra
 
 Para construir os containers utilizando Docker Compose, acesse esta pasta do projeto e use o comando ``docker compose up``, para recompilar ``docker compose up --build``. Para desligar e ligar todos os containers, use respectivamente ``docker compose stop`` e ``docker compose start``.
+
+
+#### Importante
+
+***Ao construir a imagem do container da aplicação em Docker, está sendo executado os testes unitários, antes dessa fase.***
