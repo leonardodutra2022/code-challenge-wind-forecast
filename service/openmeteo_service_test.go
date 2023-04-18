@@ -64,3 +64,9 @@ func TestGetForecastAlerts(t *testing.T) {
 	assert.Nil(t, err, "deve obter a lista sem erro")
 	assert.Len(t, list, 2, "deve conter 2 itens na lista")
 }
+
+func TestGetAllForecast(t *testing.T) {
+	list, err := service.GetAllForecast()
+	assert.Nil(t, err, "deve obter a lista sem erro")
+	assert.Len(t, list, 2, "deve conter 2 itens na lista")
+}

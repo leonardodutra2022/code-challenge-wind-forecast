@@ -11,15 +11,14 @@ import (
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/model"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/data/output_data"
 	"github.com/leonardodutra2022/code-challenge-wind-forecast/service"
-	"github.com/leonardodutra2022/code-challenge-wind-forecast/utils"
 )
 
 /*
 Estrutura de dados para tratar informações obtidas Query Param
 */
-type QueryString struct {
-	Latitude  float64 `form:"latitude"`
-	Longitude float64 `form:"longitude"`
+type ResponseForecastOutput struct {
+	DateLastQueryApi string                       `json:"ultima_consulta_api"`
+	Forecasts        []output_data.ForecastOutput `json:"previsoes"`
 }
 
 /*
@@ -28,20 +27,10 @@ Função controller para a rota forecast (previsão) da API local
 func GetForecast(c *gin.Context) {
 	cfg := config.Config{}
 	env.Parse(&cfg)
-	var queryParams QueryString
-	if c.ShouldBindQuery(&queryParams) != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error":           "Parametro não informado",
-			"latitude_param":  queryParams.Latitude,
-			"longitude_param": queryParams.Longitude,
-		})
-		return
-	}
-	var forecastOutput output_data.ForecastOutput
-	statusCode, forecastInput, err := service.GetForecastApi(queryParams.Latitude, queryParams.Longitude)
-	forecastOutput = adapter.ForecastInputToOutput(forecastInput)
+	listAllForecasts, err := service.GetAllForecast()
+	forecastsOutput := adapter.ForecastsToForecastOutput(listAllForecasts)
 	if err != nil {
-		c.JSON(statusCode, gin.H{
+		c.JSON(http.StatusBadRequest, gin.H{
 			"error": err.Error(),
 		})
 		return
@@ -61,10 +50,11 @@ func GetForecast(c *gin.Context) {
 		})
 		return
 	}
-	forecastOutput.DateLastQueryApi = queryApiLastDate.DateLastQueryApi.Format(time.RFC822Z)
-	forecastOutput.DateTime = utils.DateStringToTime(forecastOutput.DateTime).Format(time.RFC822Z)
-	c.JSON(statusCode,
-		forecastOutput,
+	var response ResponseForecastOutput
+	response.DateLastQueryApi = queryApiLastDate.DateLastQueryApi.Format(time.RFC822Z)
+	response.Forecasts = forecastsOutput
+	c.JSON(http.StatusOK,
+		response,
 	)
 }
 

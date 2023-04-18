@@ -40,3 +40,22 @@ func TestForecastToForecastAlertOutput(t *testing.T) {
 	assert.Equal(t, 100.0, forecastAlertOutput.WindDirection, "deve ser equivalente o valor de 'direção do vento' já convertido/adaptado")
 	assert.Equal(t, false, forecastAlertOutput.Alert, "deve ser equivalente o valor de 'alerta' em boleano já convertido/adaptado")
 }
+
+func TestForecastsToForecastOutput(t *testing.T) {
+	forecasts := []model.Forecast{{
+		Vel:       10.0,
+		Dir:       100.0,
+		Alerta:    false,
+		Data:      time.Now(),
+		UpdatedAt: time.Now(),
+	},
+		{
+			Vel:       10.0,
+			Dir:       100.0,
+			Alerta:    false,
+			Data:      time.Now(),
+			UpdatedAt: time.Now(),
+		}}
+	forecastAlertOutput := adapter.ForecastsToForecastOutput(forecasts)
+	assert.Len(t, forecastAlertOutput, 2, "deve obter dois itens convertidos no slice")
+}
