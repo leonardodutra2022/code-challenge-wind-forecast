@@ -14,11 +14,16 @@ import (
 )
 
 /*
-Estrutura de dados para tratar informações obtidas Query Param
+Estrutura de dados para saída de dados
 */
 type ResponseForecastOutput struct {
 	DateLastQueryApi string                       `json:"ultima_consulta_api"`
 	Forecasts        []output_data.ForecastOutput `json:"previsoes"`
+}
+
+type ResponseAlertsOutput struct {
+	DateLastQueryApi string                            `json:"ultima_consulta_api"`
+	Alerts           []output_data.ForecastAlertOutput `json:"alertas"`
 }
 
 /*
@@ -110,10 +115,13 @@ func GetAlerts(c *gin.Context) {
 	var forecastAlertsOutputs []output_data.ForecastAlertOutput
 	for _, fcAlert := range forecastAlerts {
 		fcOutputAdapter := adapter.ForecastToForecastAlertOutput(fcAlert)
-		fcOutputAdapter.DateLastQueryApi = queryApiLastDate.DateLastQueryApi.Format(time.RFC822Z)
+		fcOutputAdapter.DateLastQueryApi = fcOutputAdapter.DateTime
 		forecastAlertsOutputs = append(forecastAlertsOutputs, fcOutputAdapter)
 	}
+	var response ResponseAlertsOutput
+	response.DateLastQueryApi = queryApiLastDate.DateLastQueryApi.Format(time.RFC822Z)
+	response.Alerts = forecastAlertsOutputs
 	c.JSON(http.StatusOK,
-		forecastAlertsOutputs,
+		response,
 	)
 }
