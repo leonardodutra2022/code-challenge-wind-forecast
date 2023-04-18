@@ -17,8 +17,8 @@ import (
 Estrutura de dados para tratar informações obtidas Query Param
 */
 type ResponseForecastOutput struct {
-	DateLastQueryApi string                       `json:"lastdate_queryapi"`
-	Forecasts        []output_data.ForecastOutput `json:"forecasts"`
+	DateLastQueryApi string                       `json:"ultima_consulta_api"`
+	Forecasts        []output_data.ForecastOutput `json:"previsoes"`
 }
 
 /*
