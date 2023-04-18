@@ -29,6 +29,7 @@ func ForecastToForecastAlertOutput(forecastAlerts model.Forecast) output_data.Fo
 	forecastOutput.WindDirection = forecastAlerts.Dir
 	forecastOutput.WindSpeed = forecastAlerts.Vel
 	forecastOutput.DateTime = forecastAlerts.Data.Format(time.RFC822Z)
+	forecastOutput.DateLastQueryApi = forecastAlerts.UpdatedAt.Format(time.RFC822Z)
 	return forecastOutput
 }
 
