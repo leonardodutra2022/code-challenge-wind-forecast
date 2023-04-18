@@ -59,3 +59,22 @@ func TestForecastsToForecastOutput(t *testing.T) {
 	forecastAlertOutput := adapter.ForecastsToForecastOutput(forecasts)
 	assert.Len(t, forecastAlertOutput, 2, "deve obter dois itens convertidos no slice")
 }
+
+func ForecastsToForecastAlertOutput(t *testing.T) {
+	forecasts := []model.Forecast{{
+		Vel:       10.0,
+		Dir:       100.0,
+		Alerta:    false,
+		Data:      time.Now(),
+		UpdatedAt: time.Now(),
+	},
+		{
+			Vel:       10.0,
+			Dir:       100.0,
+			Alerta:    false,
+			Data:      time.Now(),
+			UpdatedAt: time.Now(),
+		}}
+	forecastAlertOutput := adapter.ForecastsToForecastAlertOutput(forecasts)
+	assert.Len(t, forecastAlertOutput, 2, "deve obter dois itens convertidos no slice")
+}

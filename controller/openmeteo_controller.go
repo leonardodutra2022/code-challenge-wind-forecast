@@ -112,12 +112,7 @@ func GetAlerts(c *gin.Context) {
 		})
 		return
 	}
-	var forecastAlertsOutputs []output_data.ForecastAlertOutput
-	for _, fcAlert := range forecastAlerts {
-		fcOutputAdapter := adapter.ForecastToForecastAlertOutput(fcAlert)
-		fcOutputAdapter.DateLastQueryApi = fcOutputAdapter.DateTime
-		forecastAlertsOutputs = append(forecastAlertsOutputs, fcOutputAdapter)
-	}
+	forecastAlertsOutputs := adapter.ForecastsToForecastAlertOutput(forecastAlerts)
 	var response ResponseAlertsOutput
 	response.DateLastQueryApi = queryApiLastDate.DateLastQueryApi.Format(time.RFC822Z)
 	response.Alerts = forecastAlertsOutputs
